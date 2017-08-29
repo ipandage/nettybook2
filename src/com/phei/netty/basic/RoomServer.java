@@ -15,6 +15,7 @@
  */
 package com.phei.netty.basic;
 
+import com.phei.netty.protocol.netty.client.NettyClient;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -23,13 +24,12 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-/**
- * @author lilinfeng
- * @version 1.0
- * @date 2014年2月14日
- */
-public class TimeServer {
+public class RoomServer {
+
+    private static final Log LOG = LogFactory.getLog(NettyClient.class);
 
     public void bind(int port) throws Exception {
         // 配置服务端的NIO线程组
@@ -56,7 +56,7 @@ public class TimeServer {
     private class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
         @Override
         protected void initChannel(SocketChannel arg0) throws Exception {
-            arg0.pipeline().addLast(new TimeServerHandler());
+            arg0.pipeline().addLast(new RoomBootstrap());
         }
 
     }
@@ -74,6 +74,6 @@ public class TimeServer {
                 // 采用默认值
             }
         }
-        new TimeServer().bind(port);
+        new RoomServer().bind(port);
     }
 }

@@ -15,21 +15,23 @@
  */
 package com.phei.netty.basic;
 
+import com.phei.netty.protocol.netty.client.NettyClient;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-/**
- * @author lilinfeng
- * @version 1.0
- * @date 2014年2月14日
- */
-public class TimeServerHandler extends ChannelHandlerAdapter {
+public class RoomBootstrap extends ChannelHandlerAdapter {
+
+    private static final Log LOG = LogFactory.getLog(NettyClient.class);
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
+        LOG.info("读取数据");
+        // 读取到数据
         ByteBuf buf = (ByteBuf) msg;
         byte[] req = new byte[buf.readableBytes()];
         buf.readBytes(req);
@@ -42,12 +44,29 @@ public class TimeServerHandler extends ChannelHandlerAdapter {
     }
 
     @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("建立连接");
+        // 建立连接
+        super.channelActive(ctx);
+        System.out.println("conn id is " + ctx.channel().id().asLongText());
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("关闭连接");
+        // 连接关闭
+        super.channelInactive(ctx);
+    }
+
+    @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("读取完毕");
         ctx.flush();
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        System.out.println("发生异常");
         ctx.close();
     }
 }
